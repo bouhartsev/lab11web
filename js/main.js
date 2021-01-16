@@ -24,18 +24,9 @@ $(document).ready(function(){
 			}
 	}, 1000);
 
-	$("body").css('zoom', ($( window ).width()/1920))
-	$( window ).resize(function() {$("body").css('zoom',($( window ).width()/1920))});
+	$("body").css('zoom', ($(window).width()/1920))
+	$(window).resize(function() {$("body").css('zoom',($(window).width()/1920))});
 
-	var availableTags = [
-	  "Испанский",
-	  "Итальянский",
-	  "Английский",
-	  "Китайский",
-	  "Русский"
-	];
-
-	$("input[name='name']").autocomplete({source: availableTags});
 });
 
 $(window).on('load', function () {
@@ -76,15 +67,46 @@ $(window).on('load', function () {
 						left: 0;
 					`
 				}).prependTo('.video');
+
+				$('#video_promo').css({'background': 'var(--gray)', 'cursor': 'default'});
+
+				$('#progress_time').detach();
 			}
 		});
+
+		$("#video_promo").on(
+			"timeupdate",
+			function(event){
+				$('#progress_time').progressbar("value", this.currentTime);
+			}
+		);
 
 		$('.play_icon').click(function(){
 			$('.play_icon').hide();
 			$('.text_video').hide();
 			$('#video_promo').removeClass();
 			$('#video_poster').detach();
+			$('#video_promo').css({'background': 'var(--gray)', 'cursor': 'pointer'});
 			$('#video_promo').get(0).play();
+
+			$("<div/>", {
+				id: 'progress_time',
+				style: `
+					display: block;
+					position: absolute;
+					width: ${$('#video_promo').attr('width')}px;
+					height: ${$('#video_promo').attr('height')/10}px;
+					z-index: 0;
+					bottom: 0;
+					left: 0;
+					opacity: 30%;
+				`
+			}).appendTo('.video');
+
+			$('#progress_time').progressbar({
+                max: $('#video_promo').get(0).duration,
+				value: $('#video_promo').get(0).currentTime,
+            });
 		});
 
 		$('div.controller').click(function(event){
@@ -143,10 +165,27 @@ $(window).on('load', function () {
 			}
 		});
 
+		$('#subscribe').click(function(event){
+			event.preventDefault();
+			$('body').append(`<div id="dialog" title="¡Gracias!" style="display: none">Se ha suscrito con éxito al Newsletter.</div>`);
+			$("#dialog").dialog({
+				resizable: false,
+				draggable: false,
+				modal: true,
+				position: { my: "center", at: "center", of: $('#subscribe')},
+				close: function() {
+					$("#dialog").detach();
+				}
+			});
+		});
+
 		$('.load').detach();
 	}
 });
 
-//on, show, hide, text, css, detach, prependTo, width, find, ready - 10
+////methods:
+//on, show, hide, text, css, detach, prependTo, width, find, ready
 //addClass, removeClass, fadeOut, get, children, prop, prev, next, etc.
 //
+////ui:
+//dialog, progress bar
