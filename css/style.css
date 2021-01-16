@@ -635,6 +635,10 @@ video {
 	width: 976rem;
 }
 
+.video_paused{
+	opacity: 0;
+}
+
 .text_video {
 	display: block;
 	position: absolute;
